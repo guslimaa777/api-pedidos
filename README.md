@@ -48,6 +48,7 @@ A API sobe em `http://localhost:3000` (pode ser alterado pela variável `PORT`).
 
 | Método | Rota | Descrição | Respostas |
 |---|---|---|---|
+| `GET` | `/health` | Verifica se a API está disponível | `200` |
 | `POST` | `/pedidos` | Cadastra um pedido (RF01) | `201` criado · `400` dados inválidos |
 | `GET` | `/pedidos` | Lista os pedidos (RF02) | `200` |
 | `GET` | `/pedidos/:id` | Consulta um pedido (RF03) | `200` encontrado · `404` inexistente |
@@ -259,14 +260,14 @@ evidencias/                        # Prints do Postman
 npm test
 ```
 
-São 46 testes em dois arquivos:
+São 47 testes em dois arquivos:
 
 - **`tests/pedidos.api.test.js`** (integração) — usa **supertest** para fazer requisições HTTP
   ao app sem abrir porta. Cobre todas as rotas e códigos de resposta: criação válida, cada
   regra de validação (cliente vazio/só espaços, valor zero/negativo/texto, tipo e prioridade
   desconhecidos), JSON mal formado, listagem, consulta de ids inexistentes e mal formados,
-  fluxo completo de status, transições proibidas, 404 no PATCH e erro inesperado virando 500
-  (simulado com `jest.spyOn`).
+  verificação de saúde, fluxo completo de status, transições proibidas, 404 no PATCH e erro
+  inesperado virando 500 (simulado com `jest.spyOn`).
 - **`tests/pedidos.service.test.js`** (unitário) — chama o service diretamente, sem HTTP,
   mostrando que as regras de negócio não dependem do Express.
 

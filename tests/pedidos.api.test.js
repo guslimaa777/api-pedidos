@@ -224,6 +224,13 @@ describe('PATCH /pedidos/:id/status', () => {
 });
 
 describe('Rotas e erros gerais', () => {
+  test('GET /health confirma que a API está disponível', async () => {
+    const res = await request(app).get('/health');
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ status: 'ok' });
+  });
+
   test('retorna 404 em JSON para rota inexistente', async () => {
     const res = await request(app).get('/produtos');
 
