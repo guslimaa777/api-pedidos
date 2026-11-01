@@ -41,6 +41,9 @@ A API sobe em `http://localhost:3000` (pode ser alterado pela variável `PORT`).
 
 > Os dados ficam **em memória**: ao reiniciar o servidor, os pedidos são apagados e os ids
 > voltam a começar em 1.
+>
+> Ao receber `SIGINT` ou `SIGTERM`, o servidor para de aceitar novas conexões e aguarda as
+> requisições em andamento antes de encerrar.
 
 ---
 
