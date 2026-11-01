@@ -85,6 +85,15 @@ describe('POST /pedidos', () => {
     expect(res.body.erro).toMatch(/JSON inválido/);
   });
 
+  test('retorna 413 quando o corpo JSON excede 10 KB', async () => {
+    const res = await request(app)
+      .post('/pedidos')
+      .send({ ...pedidoValido, observacao: 'x'.repeat(11 * 1024) });
+
+    expect(res.status).toBe(413);
+    expect(res.body.erro).toMatch(/excede o limite de 10 KB/);
+  });
+
   test('não cria pedido quando a requisição é inválida', async () => {
     await request(app).post('/pedidos').send({ ...pedidoValido, valor: -1 });
     const lista = await request(app).get('/pedidos');

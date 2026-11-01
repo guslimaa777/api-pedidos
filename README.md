@@ -170,6 +170,7 @@ Todos os erros retornam JSON com a chave `erro`.
 | Dados inválidos no cadastro | `400` | ver abaixo |
 | Status inválido / transição não permitida | `400` | `{ "erro": "Status inválido.", "detalhes": [...] }` |
 | JSON mal formado no corpo | `400` | `{ "erro": "JSON inválido no corpo da requisição." }` |
+| Corpo JSON maior que 10 KB | `413` | `{ "erro": "Corpo da requisição excede o limite de 10 KB." }` |
 | Pedido inexistente | `404` | `{ "erro": "Pedido com id 9999 não encontrado." }` |
 | Rota inexistente | `404` | `{ "erro": "Rota GET /produtos não encontrada." }` |
 | Erro inesperado no servidor | `500` | `{ "erro": "Erro interno do servidor." }` |
@@ -260,14 +261,14 @@ evidencias/                        # Prints do Postman
 npm test
 ```
 
-São 47 testes em dois arquivos:
+São 48 testes em dois arquivos:
 
 - **`tests/pedidos.api.test.js`** (integração) — usa **supertest** para fazer requisições HTTP
   ao app sem abrir porta. Cobre todas as rotas e códigos de resposta: criação válida, cada
   regra de validação (cliente vazio/só espaços, valor zero/negativo/texto, tipo e prioridade
-  desconhecidos), JSON mal formado, listagem, consulta de ids inexistentes e mal formados,
-  verificação de saúde, fluxo completo de status, transições proibidas, 404 no PATCH e erro
-  inesperado virando 500 (simulado com `jest.spyOn`).
+  desconhecidos), JSON mal formado e corpo acima de 10 KB, listagem, consulta de ids
+  inexistentes e mal formados, verificação de saúde, fluxo completo de status, transições
+  proibidas, 404 no PATCH e erro inesperado virando 500 (simulado com `jest.spyOn`).
 - **`tests/pedidos.service.test.js`** (unitário) — chama o service diretamente, sem HTTP,
   mostrando que as regras de negócio não dependem do Express.
 

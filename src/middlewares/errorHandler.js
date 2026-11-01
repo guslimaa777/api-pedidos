@@ -21,6 +21,10 @@ function tratadorDeErros(erro, req, res, next) {
     return res.status(400).json({ erro: 'JSON inválido no corpo da requisição.' });
   }
 
+  if (erro.type === 'entity.too.large') {
+    return res.status(413).json({ erro: 'Corpo da requisição excede o limite de 10 KB.' });
+  }
+
   // Qualquer outra coisa é falha nossa: registra no log e responde 500
   // sem expor detalhes internos (stack trace) ao cliente.
   console.error(erro);

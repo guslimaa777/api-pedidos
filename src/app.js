@@ -4,7 +4,7 @@ const { rotaNaoEncontrada, tratadorDeErros } = require('./middlewares/errorHandl
 
 const app = express();
 
-app.use(express.json());
+app.use(express.json({ limit: '10kb' }));
 
 app.get('/', (req, res) => {
   res.status(200).json({ mensagem: 'API de Gerenciamento de Pedidos', rotas: '/pedidos' });
