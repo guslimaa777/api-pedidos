@@ -120,6 +120,36 @@ describe('GET /pedidos', () => {
     expect(res.body).toHaveLength(2);
     expect(res.body.map((p) => p.id)).toEqual([1, 2]);
   });
+
+  test('filtra pedidos por status, tipo e prioridade', async () => {
+    await request(app).post('/pedidos').send(pedidoValido);
+    await request(app).post('/pedidos').send({
+      ...pedidoValido,
+      cliente: 'Maria',
+      tipo: 'retirada',
+      prioridade: 'alta',
+    });
+    await request(app).patch('/pedidos/1/status').send({ status: 'em_preparacao' });
+
+    const res = await request(app).get(
+      '/pedidos?status=em_preparacao&tipo=entrega&prioridade=normal'
+    );
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveLength(1);
+    expect(res.body[0].id).toBe(1);
+  });
+
+  test.each([
+    ['status', 'desconhecido'],
+    ['tipo', 'drone'],
+    ['prioridade', 'urgente'],
+  ])('retorna 400 para filtro %s inválido', async (campo, valor) => {
+    const res = await request(app).get(`/pedidos?${campo}=${valor}`);
+
+    expect(res.status).toBe(400);
+    expect(res.body.detalhes.map((detalhe) => detalhe.campo)).toContain(campo);
+  });
 });
 
 describe('GET /pedidos/:id', () => {

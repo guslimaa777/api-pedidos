@@ -14,7 +14,7 @@ function criar(req, res, next) {
 
 function listar(req, res, next) {
   try {
-    res.status(200).json(pedidosService.listar());
+    res.status(200).json(pedidosService.listar(req.query));
   } catch (erro) {
     next(erro);
   }

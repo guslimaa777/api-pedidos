@@ -50,7 +50,7 @@ A API sobe em `http://localhost:3000` (pode ser alterado pela variável `PORT`).
 |---|---|---|---|
 | `GET` | `/health` | Verifica se a API está disponível | `200` |
 | `POST` | `/pedidos` | Cadastra um pedido (RF01) | `201` criado · `400` dados inválidos |
-| `GET` | `/pedidos` | Lista os pedidos (RF02) | `200` |
+| `GET` | `/pedidos` | Lista ou filtra os pedidos (RF02) | `200` · `400` filtro inválido |
 | `GET` | `/pedidos/:id` | Consulta um pedido (RF03) | `200` encontrado · `404` inexistente |
 | `PATCH` | `/pedidos/:id/status` | Atualiza o status (RF04) | `200` atualizado · `400` inválido · `404` inexistente |
 
@@ -85,7 +85,17 @@ Resposta `201 Created`:
 
 ### `GET /pedidos`
 
-Resposta `200 OK` — array com todos os pedidos (vazio `[]` se não houver nenhum).
+Resposta `200 OK` — array com todos os pedidos (vazio `[]` se não houver nenhum). A lista
+aceita filtros opcionais combináveis:
+
+| Parâmetro | Valores aceitos |
+|---|---|
+| `status` | `recebido`, `em_preparacao`, `enviado`, `entregue`, `cancelado` |
+| `tipo` | `entrega`, `retirada` |
+| `prioridade` | `baixa`, `normal`, `alta` |
+
+Exemplo: `GET /pedidos?status=em_preparacao&tipo=entrega`. Um valor inválido retorna `400`
+com os detalhes dos filtros incorretos.
 
 ### `GET /pedidos/:id`
 
@@ -261,14 +271,15 @@ evidencias/                        # Prints do Postman
 npm test
 ```
 
-São 48 testes em dois arquivos:
+São 52 testes em dois arquivos:
 
 - **`tests/pedidos.api.test.js`** (integração) — usa **supertest** para fazer requisições HTTP
   ao app sem abrir porta. Cobre todas as rotas e códigos de resposta: criação válida, cada
   regra de validação (cliente vazio/só espaços, valor zero/negativo/texto, tipo e prioridade
-  desconhecidos), JSON mal formado e corpo acima de 10 KB, listagem, consulta de ids
-  inexistentes e mal formados, verificação de saúde, fluxo completo de status, transições
-  proibidas, 404 no PATCH e erro inesperado virando 500 (simulado com `jest.spyOn`).
+  desconhecidos), JSON mal formado e corpo acima de 10 KB, listagem com filtros válidos e
+  inválidos, consulta de ids inexistentes e mal formados, verificação de saúde, fluxo completo
+  de status, transições proibidas, 404 no PATCH e erro inesperado virando 500 (simulado com
+  `jest.spyOn`).
 - **`tests/pedidos.service.test.js`** (unitário) — chama o service diretamente, sem HTTP,
   mostrando que as regras de negócio não dependem do Express.
 

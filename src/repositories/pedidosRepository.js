@@ -4,9 +4,13 @@
 let pedidos = [];
 let proximoId = 1;
 
-function listar() {
+function listar(filtros = {}) {
   // Devolve cópias para que ninguém altere o "banco" sem passar pelo repositório.
-  return pedidos.map((p) => ({ ...p }));
+  return pedidos
+    .filter((pedido) =>
+      Object.entries(filtros).every(([campo, valor]) => pedido[campo] === valor)
+    )
+    .map((pedido) => ({ ...pedido }));
 }
 
 function buscarPorId(id) {

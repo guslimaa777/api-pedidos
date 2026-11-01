@@ -2,7 +2,11 @@
 // resultados ou lança erros. Por isso pode ser testado sem subir o servidor.
 
 const repository = require('../repositories/pedidosRepository');
-const { validarCriacao, validarStatus } = require('../validators/pedidoValidator');
+const {
+  validarCriacao,
+  validarStatus,
+  validarFiltrosListagem,
+} = require('../validators/pedidoValidator');
 const { STATUS_INICIAL, TRANSICOES } = require('../config/regras');
 const { NotFoundError, ValidationError } = require('../errors/AppError');
 
@@ -20,8 +24,8 @@ function criar(dados) {
   return repository.criar({ ...pedidoValido, status: STATUS_INICIAL });
 }
 
-function listar() {
-  return repository.listar();
+function listar(query = {}) {
+  return repository.listar(validarFiltrosListagem(query));
 }
 
 function buscarPorId(idParam) {

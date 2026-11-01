@@ -61,4 +61,35 @@ function validarStatus(body) {
   return status;
 }
 
-module.exports = { validarCriacao, validarStatus };
+function validarFiltrosListagem(query) {
+  const filtros = {};
+  const erros = [];
+  const opcoes = [
+    ['status', STATUS],
+    ['tipo', TIPOS],
+    ['prioridade', PRIORIDADES],
+  ];
+
+  for (const [campo, valores] of opcoes) {
+    const valor = query[campo];
+    if (valor === undefined) continue;
+
+    if (!valores.includes(valor)) {
+      erros.push({
+        campo,
+        mensagem: `${campo} deve ser um dos valores: ${valores.join(', ')}.`,
+      });
+      continue;
+    }
+
+    filtros[campo] = valor;
+  }
+
+  if (erros.length > 0) {
+    throw new ValidationError('Filtros de listagem inválidos.', erros);
+  }
+
+  return filtros;
+}
+
+module.exports = { validarCriacao, validarStatus, validarFiltrosListagem };
